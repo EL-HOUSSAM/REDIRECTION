@@ -38,7 +38,7 @@
       console.log(navigator.userAgent)
       console.log(ip)
       // === إرسال البيانات إلى Google Sheet ===
-      // navigator.sendBeacon(scriptURL, JSON.stringify(payload));
+      navigator.sendBeacon(scriptURL, JSON.stringify(payload));
 
       // === إعادة التوجيه بعد لحظة قصيرة ===
       // setTimeout(() => {
