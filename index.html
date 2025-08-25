@@ -9,44 +9,41 @@
       const defaultRedirect = "https://example.com"; // رابط افتراضي لو ماكانش param link
       const scriptURL = "https://script.google.com/macros/s/AKfycbzl_TyFZHE1X0vp7YvFRf5eJrbNviqo4bBIkbksq-_0R3KQEvPixU4F5PkKhT0tq_zp/exec"; // ضع رابط Apps Script هنا
 
-      // === الحصول على IP ===
-      let ip = "";
-      try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const json = await res.json();
-        ip = json.ip;
-      } catch (err) {}
+    
+        // === الحصول على معلومات الموقع ===
+  let ip = "", country = "", city = "";
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    ip = data.ip;
+    country = data.country_name;
+    city = data.city;
+  } catch (err) {}
 
-      // === قراءة الباراميترات من URL ===
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("email") || "";
-      const linkParam = params.get("link") || "";
-      const platform = params.get("platform") || "";
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get("email") || "";
+  const linkParam = params.get("link") || "";
+  const platform = params.get("platform") || "";
 
-      // الرابط النهائي (من link param أو الافتراضي)
-      const redirectURL = linkParam || defaultRedirect;
+  const redirectURL = linkParam || defaultRedirect;
 
-      // === تجهيز البيانات للإرسال ===
-      const payload = {
-        email: email,
-        link: platform || redirectURL, // نخزن platform إذا موجود وإلا نخزن الرابط
-        ua: navigator.userAgent,
-        ip: ip
-      };
-      console.log(email)
-      console.log(redirectURL)
-      console.log(navigator.userAgent)
-      console.log(ip)
-      // === إرسال البيانات إلى Google Sheet ===
-      navigator.sendBeacon(scriptURL, JSON.stringify(payload));
+  const payload = {
+    email: email,
+    link: platform || redirectURL,
+    ua: navigator.userAgent,
+    ip: ip,
+    country: country,
+    city: city
+  };
 
-      // === إعادة التوجيه بعد لحظة قصيرة ===
-      // setTimeout(() => {
-      //   window.location.href = redirectURL;
-      // }, 300);
-    }
-    // window.onload = 
-    logAndRedirect();
+  navigator.sendBeacon(scriptURL, JSON.stringify(payload));
+
+  setTimeout(() => {
+    window.location.href = redirectURL;
+  }, 300);
+}
+
+     window.onload = logAndRedirect();
   </script>
 </head>
 <body>
