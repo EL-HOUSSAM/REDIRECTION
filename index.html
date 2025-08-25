@@ -33,16 +33,20 @@
         ua: navigator.userAgent,
         ip: ip
       };
-
+      console.log(email)
+      console.log(redirectURL)
+      console.log(navigator.userAgent)
+      console.log(ip)
       // === إرسال البيانات إلى Google Sheet ===
-      navigator.sendBeacon(scriptURL, JSON.stringify(payload));
+      // navigator.sendBeacon(scriptURL, JSON.stringify(payload));
 
       // === إعادة التوجيه بعد لحظة قصيرة ===
-      setTimeout(() => {
-        window.location.href = redirectURL;
-      }, 300);
+      // setTimeout(() => {
+      //   window.location.href = redirectURL;
+      // }, 300);
     }
-    window.onload = logAndRedirect;
+    // window.onload = 
+    logAndRedirect();
   </script>
 </head>
 <body>
