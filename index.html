@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    async function logAndRedirect() {
+      // === الإعدادات ===
+      const defaultRedirect = "https://example.com"; // رابط افتراضي لو ماكانش param link
+      const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_URL"; // ضع رابط Apps Script هنا
+
+      // === الحصول على IP ===
+      let ip = "";
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const json = await res.json();
+        ip = json.ip;
+      } catch (err) {}
+
+      // === قراءة الباراميترات من URL ===
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("email") || "";
+      const linkParam = params.get("link") || "";
+      const platform = params.get("platform") || "";
+
+      // الرابط النهائي (من link param أو الافتراضي)
+      const redirectURL = linkParam || defaultRedirect;
+
+      // === تجهيز البيانات للإرسال ===
+      const payload = {
+        email: email,
+        link: platform || redirectURL, // نخزن platform إذا موجود وإلا نخزن الرابط
+        ua: navigator.userAgent,
+        ip: ip
+      };
+
+      // === إرسال البيانات إلى Google Sheet ===
+      navigator.sendBeacon(scriptURL, JSON.stringify(payload));
+
+      // === إعادة التوجيه بعد لحظة قصيرة ===
+      setTimeout(() => {
+        window.location.href = redirectURL;
+      }, 300);
+    }
+    window.onload = logAndRedirect;
+  </script>
+</head>
+<body>
+  <p>Redirecting, please wait...</p>
+</body>
+</html>
